@@ -1,0 +1,71 @@
+Column                                                 Type        
+CustomerID                                             NUMBER      
+Name                                                   VARCHAR2    
+Age                                                    NUMBER      
+Balance                                                NUMBER      
+IsVIP                                                  VARCHAR2(5) 
+
+Column                                                 Type   
+LoanID                                                 NUMBER 
+CustomerID                                             NUMBER 
+InterestRate                                           NUMBER 
+DueDate                                                DATE   
+
+Scenario 1: Apply 1% Discount for Customers Above 60
+
+SET SERVEROUTPUT ON;
+BEGIN
+    FOR c IN (
+        SELECT c.CustomerID, c.Age, l.LoanID, l.InterestRate
+        FROM Customers c
+        JOIN Loans l
+        ON c.CustomerID = l.CustomerID
+    )
+    LOOP
+        IF c.Age > 60 THEN
+            UPDATE Loans
+            SET InterestRate = InterestRate - 1
+            WHERE LoanID = c.LoanID;
+            DBMS_OUTPUT.PUT_LINE('Discount applied to Customer ID: ' || c.CustomerID);
+        END IF;
+    END LOOP;
+    COMMIT;
+END;
+/
+
+Scenario 2: Promote Customers to VIP
+
+SET SERVEROUTPUT ON;
+BEGIN
+    FOR c IN (SELECT CustomerID, Balance FROM Customers)
+    LOOP
+        IF c.Balance > 10000 THEN
+            UPDATE Customers
+            SET IsVIP = 'TRUE'
+            WHERE CustomerID = c.CustomerID;
+            DBMS_OUTPUT.PUT_LINE('Customer ' || c.CustomerID || ' promoted to VIP.');
+        END IF;
+    END LOOP;
+    COMMIT;
+END;
+/
+
+Scenario 3: Loan Due Reminder
+
+SET SERVEROUTPUT ON;
+BEGIN
+    FOR l IN (
+        SELECT c.Name, lo.DueDate
+        FROM Customers c
+        JOIN Loans lo
+        ON c.CustomerID = lo.CustomerID
+        WHERE lo.DueDate BETWEEN SYSDATE AND SYSDATE + 30
+    )
+    LOOP
+        DBMS_OUTPUT.PUT_LINE(
+            'Reminder: Dear ' || l.Name ||
+            ', your loan is due on ' || TO_CHAR(l.DueDate, 'DD-MON-YYYY')
+        );
+    END LOOP;
+END;
+/
