@@ -1,0 +1,23 @@
+1. Understanding Recursive Algorithms:
+Recursion is a programming technique where a method calls itself until a base condition is met.
+It simplifies problems that can be broken into smaller, similar subproblems.
+Advantages
+Simple and readable code.
+Useful for mathematical and hierarchical problems.
+Disadvantages
+Can consume more memory due to recursive calls.
+May be slower if the same calculations are repeated.
+
+2. Setup:
+Create a method to calculate the future value based on:
+Initial investment
+Annual growth rate
+Number of years
+
+4. Analysis:
+Time Complexity
+Each recursive call handles one year.
+If there are n years, the method is called n times.
+
+Time Complexity: O(n)
+Space Complexity: O(n) (because each recursive call is stored on the call stack)
